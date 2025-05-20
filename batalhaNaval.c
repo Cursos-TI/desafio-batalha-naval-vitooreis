@@ -4,7 +4,7 @@
 // Siga os comentários para implementar cada parte do desafio.
 
 int main() {
-    // Nível Aventureiro - Tabuleiro Completo e Navios Diagonais
+    // Nível Mestre - Habilidades Especiais e Áreas de Efeito
     int tabuleiro[10][10]; // Tabuleiro 10x10
 
     // Inicializa o tabuleiro com água (0)
@@ -36,36 +36,112 @@ int main() {
     // Posiciona navio horizontal (3 casas na mesma linha)
     for (int i = 0; i < 3; i++) {
         tabuleiro[linha_h][coluna_h + i] = navio_horizontal[i];
-        // Exibe as coordenadas de cada parte do navio
-        printf("Navio horizontal: (%d, %d)\n", linha_h, coluna_h + i);
     }
 
     // Posiciona navio vertical (3 casas na mesma coluna)
     for (int i = 0; i < 3; i++) {
         tabuleiro[linha_v + i][coluna_v] = navio_vertical[i];
-        // Exibe as coordenadas de cada parte do navio
-        printf("Navio vertical: (%d, %d)\n", linha_v + i, coluna_v);
     }
 
     // Posiciona navio diagonal principal (linha[i], coluna[i] aumentando simultaneamente)
     for (int i = 0; i < 3; i++) {
         tabuleiro[linha_d1 + i][coluna_d1 + i] = navio_diagonal_1[i];
-        // Exibe as coordenadas de cada parte do navio
-        printf("Navio diagonal 1: (%d, %d)\n", linha_d1 + i, coluna_d1 + i);
     }
 
     // Posiciona navio diagonal secundário (linha[i], coluna[9-i] diminuindo simultaneamente)
     for (int i = 0; i < 3; i++) {
         tabuleiro[linha_d2 + i][coluna_d2 - i] = navio_diagonal_2[i];
-        // Exibe as coordenadas de cada parte do navio
-        printf("Navio diagonal 2: (%d, %d)\n", linha_d2 + i, coluna_d2 - i);
     }
 
-    // Exibe o tabuleiro completo no console, mostrando 0 para água e 3 para navios
+    // Definindo a área de efeito das habilidades (5)
+    // Cone (matriz 5x5)
+    int cone[5][5] = {
+        {0, 0, 1, 0, 0},
+        {0, 1, 1, 1, 0},
+        {1, 1, 1, 1, 1},
+        {0, 1, 1, 1, 0},
+        {0, 0, 1, 0, 0}
+    };
+
+    // Cruz (matriz 5x5)
+    int cruz[5][5] = {
+        {0, 0, 1, 0, 0},
+        {0, 1, 1, 1, 0},
+        {1, 1, 1, 1, 1},
+        {0, 1, 1, 1, 0},
+        {0, 0, 1, 0, 0}
+    };
+
+    // Octaedro (matriz 5x5)
+    int octaedro[5][5] = {
+        {0, 0, 1, 0, 0},
+        {0, 1, 1, 1, 0},
+        {1, 1, 1, 1, 1},
+        {0, 1, 1, 1, 0},
+        {0, 0, 1, 0, 0}
+    };
+
+    // Definir ponto de origem para as habilidades
+    int origem_cone_linha = 2, origem_cone_coluna = 2;
+    int origem_cruz_linha = 5, origem_cruz_coluna = 5;
+    int origem_octa_linha = 7, origem_octa_coluna = 3;
+
+
+   // Sobrepor habilidades no tabuleiro
+   // Habilidade Cone
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (cone[i][j] == 1) {
+                int linha = origem_cone_linha + i - 2;
+                int coluna = origem_cone_coluna + j - 2;
+                // Verifica se a posição é válida, não sobrepõe navios (valor 3) e é água (valor 0)
+                if (linha >= 0 && linha < 10 && coluna >= 0 && coluna < 10 && tabuleiro[linha][coluna] == 0) {
+                    tabuleiro[linha][coluna] = 5; // Marca a área afetada pela habilidade
+                }
+            }
+        }
+    }
+
+    // Habilidade Cruz
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (cruz[i][j] == 1) {
+                int linha = origem_cruz_linha + i - 2;
+                int coluna = origem_cruz_coluna + j - 2;
+                // Verifica se a posição é válida, não sobrepõe navios (valor 3) e é água (valor 0)
+                if (linha >= 0 && linha < 10 && coluna >= 0 && coluna < 10 && tabuleiro[linha][coluna] == 0) {
+                    tabuleiro[linha][coluna] = 5; // Marca a área afetada pela habilidade
+                }
+            }
+        }
+    }
+
+    // Habilidade Octaedro
+    for (int i = 0; i < 5; i++) {
+        for (int j = 0; j < 5; j++) {
+            if (octaedro[i][j] == 1) {
+                int linha = origem_octa_linha + i - 2;
+                int coluna = origem_octa_coluna + j - 2;
+                // Verifica se a posição é válida, não sobrepõe navios (valor 3) e é água (valor 0)
+                if (linha >= 0 && linha < 10 && coluna >= 0 && coluna < 10 && tabuleiro[linha][coluna] == 0) {
+                    tabuleiro[linha][coluna] = 5; // Marca a área afetada pela habilidade
+                }
+            }
+        }
+    }
+
+
+    // Exibe o tabuleiro completo no console, com diferentes caracteres para cada elemento
     printf("\nTabuleiro:\n");
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 10; j++) {
-            printf("%d ", tabuleiro[i][j]);
+            if (tabuleiro[i][j] == 0) {
+                printf("~ "); // Água
+            } else if (tabuleiro[i][j] == 3) {
+                printf("N "); // Navio
+            } else if (tabuleiro[i][j] == 5) {
+                printf("A "); // Área afetada
+            }
         }
         printf("\n");
     }
